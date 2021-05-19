@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7a38c4fb-571b-4b9c-8911-bcdde30d41b7" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1s50KFfbF9GaEFqLocfXyEpbNli" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7a38c4fb-571b-4b9c-8911-bcdde30d41b7" name="Default Changelist" comment="" />
+      <created>1620147077489</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1620147077489</updated>
+      <workItem from="1620147080202" duration="1831000" />
+      <workItem from="1620296751040" duration="1892000" />
+      <workItem from="1620654145573" duration="229000" />
+      <workItem from="1620901637969" duration="597000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="613" y="255" width="694" height="518" key="find.popup" timestamp="1620297741268">
+      <screen x="0" y="25" width="1920" height="979" />
+    </state>
+    <state x="613" y="255" width="694" height="518" key="find.popup/0.25.1920.979@0.25.1920.979" timestamp="1620297741268" />
+    <state x="305" y="48" width="670" height="676" key="search.everywhere.popup" timestamp="1620147651712">
+      <screen x="0" y="25" width="1280" height="699" />
+    </state>
+    <state x="305" y="48" width="670" height="676" key="search.everywhere.popup/0.25.1280.699@0.25.1280.699" timestamp="1620147651712" />
+  </component>
+</project>
