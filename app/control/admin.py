@@ -55,6 +55,12 @@ class PortfolioConfigurationAdmin(admin.ModelAdmin):
         'total_budget_eur'
     ]
 
+    readonly_fields = [
+        'total_hours',
+        'total_budget_resources',
+        'total_budget_eur',
+    ]
+
     inlines = [
         PortfolioConfigurationGeneralManagerRevisionInline,
         ProjectWalletInline,
@@ -71,7 +77,6 @@ class ProjectInline(admin.TabularInline):
         'description',
         'start_date',
         'is_cancelled',
-        'required_hours',
         'delayed_tasks_percentage',
         'delayed_tasks',
         'completed_tasks',
@@ -80,6 +85,11 @@ class ProjectInline(admin.TabularInline):
         'estimated_roi',
         'category',
         'status',
+        'dev_resources_hours',
+        'sysops_resources_hours',
+        'management_resources_hours',
+        'marketing_resources_hours',
+        'operative_resources_hours',
     ]
 
     def has_add_permission(self, request, obj=None):
@@ -136,7 +146,6 @@ class ProjectAdmin(admin.ModelAdmin):
         'start_date',
         'priority',
         'category',
-        'required_hours',
         'delta_roi',
         'delayed_tasks',
         'delayed_tasks_percentage',
@@ -147,6 +156,13 @@ class ProjectAdmin(admin.ModelAdmin):
         'delta_roi',
         'completed_tasks',
         'is_cancelled',
+        'delayed_tasks',
+        'delayed_tasks_percentage',
+        'estimated_resources_cost',
+        'estimated_total_cost',
+        'estimated_total_hours',
+        'estimated_total_hours',
+        'is_in_risk',
     ]
 
     list_filter = [

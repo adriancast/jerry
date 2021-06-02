@@ -1,17 +1,56 @@
 from django.db import models
 from datetime import datetime, date
 
+# Costs for every hour of each resource in EUR
+COST_DEV = 30
+COST_SYSOPS = 30
+COST_MANAGEMENT = 40
+COST_MARKETING = 35
+COST_OPERATIVE = 25
+
+
 class PortfolioConfiguration(models.Model):
     name = models.CharField(max_length=256)
     start_date = models.DateField()
     end_date = models.DateField()
 
+    dev_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_DEV))
+    sysops_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_SYSOPS))
+    management_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
+    marketing_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MARKETING))
+    operative_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_OPERATIVE))
+
+    other_costs_budget = models.PositiveIntegerField()
+
+    # Internal fields
+    total_hours = models.PositiveIntegerField()
+    total_budget_resources = models.PositiveIntegerField()
     total_budget_eur = models.PositiveIntegerField()
-    dev_resources_hours = models.PositiveIntegerField()
-    sysops_resources_hours = models.PositiveIntegerField()
-    management_resources_hours = models.PositiveIntegerField()
-    marketing_resources_hours = models.PositiveIntegerField()
-    operative_resources_hours = models.PositiveIntegerField()
+
+    def save(self, *args, **kwargs):
+        self.total_hours = sum(
+            [
+                self.dev_resources_hours,
+                self.sysops_resources_hours,
+                self.management_resources_hours,
+                self.marketing_resources_hours,
+                self.operative_resources_hours,
+            ]
+        )
+
+        self.total_budget_resources = sum(
+            [
+                self.dev_resources_hours * COST_DEV,
+                self.sysops_resources_hours * COST_SYSOPS,
+                self.management_resources_hours * COST_MANAGEMENT,
+                self.marketing_resources_hours * COST_MARKETING,
+                self.operative_resources_hours * COST_OPERATIVE,
+            ]
+        )
+
+        self.total_budget_eur = self.other_costs_budget + self.total_budget_resources
+
+        super().save(*args, **kwargs)
 
     @property
     def is_validated_by_manager(self):
@@ -92,8 +131,6 @@ class Project(models.Model):
     description = models.TextField()
     start_date = models.DateField()
 
-    required_hours = models.PositiveIntegerField()
-
     category = models.CharField(max_length=256, blank=True)
 
     estimated_roi = models.PositiveIntegerField()
@@ -101,11 +138,24 @@ class Project(models.Model):
 
     is_cancelled = models.BooleanField(default=False)
 
+    dev_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_DEV))
+    sysops_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_SYSOPS))
+    management_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
+    marketing_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MARKETING))
+    operative_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_OPERATIVE))
+    estimated_other_cost = models.PositiveIntegerField(help_text='Total costs in €')
+    total_real_cost = models.PositiveIntegerField(help_text='Money spent in the project in €')
+
     # Internal fields
     delta_roi = models.FloatField(blank=True, null=True)
     completed_tasks = models.FloatField(blank=True, null=True)
     delayed_tasks = models.IntegerField(blank=True, null=True)
     delayed_tasks_percentage = models.FloatField(blank=True, null=True)
+    estimated_total_hours = models.PositiveIntegerField(help_text='€')
+    estimated_total_cost = models.PositiveIntegerField(help_text='€')
+    estimated_resources_cost = models.PositiveIntegerField(help_text='€')
+
+    is_in_risk = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.delta_roi = round(self.real_roi / self.estimated_roi, 2)
@@ -117,9 +167,36 @@ class Project(models.Model):
         )
         self.delayed_tasks_percentage = self.delayed_tasks / total_milestones
 
+        self.estimated_total_hours = sum(
+            [
+                self.dev_resources_hours,
+                self.sysops_resources_hours,
+                self.management_resources_hours,
+                self.marketing_resources_hours,
+                self.operative_resources_hours,
+            ]
+        )
+
+        self.estimated_resources_cost = sum(
+            [
+                self.dev_resources_hours * COST_DEV,
+                self.sysops_resources_hours * COST_SYSOPS,
+                self.management_resources_hours * COST_MANAGEMENT,
+                self.marketing_resources_hours * COST_MARKETING,
+                self.operative_resources_hours * COST_OPERATIVE,
+            ]
+        )
+
+        self.estimated_total_cost = self.estimated_resources_cost + self.estimated_other_cost
+
         self.is_cancelled = False
         if self.status == self.STATUS_CANCELLED:
             self.is_cancelled = True
+
+        self.is_in_risk = any([
+            self.delayed_tasks_percentage > 0.25,
+            self.estimated_total_cost < self.total_real_cost
+        ])
 
         super().save(*args, **kwargs)
 
