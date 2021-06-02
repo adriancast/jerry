@@ -157,9 +157,10 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.base_fields['wallet'].queryset = ProjectWallet.objects.filter(
-            is_open=True
-        )
+        if not hasattr(obj, 'wallet'):
+            form.base_fields['wallet'].queryset = ProjectWallet.objects.filter(
+                is_open=True
+            )
         return form
 
     def get_readonly_fields(self, request, obj=None):
