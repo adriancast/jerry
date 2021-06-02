@@ -1,23 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7a38c4fb-571b-4b9c-8911-bcdde30d41b7" name="Default Changelist" comment="" />
+    <list default="true" id="7a38c4fb-571b-4b9c-8911-bcdde30d41b7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/control/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/control/admin.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="ProjectId" id="1s50KFfbF9GaEFqLocfXyEpbNli" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/docker-compose.yml" />
   </component>
+  <component name="RunManager">
+    <configuration name="dev" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="envFilePath" value="" />
+          <option name="sourceFilePath" value="docker-compose.yml" />
+          <option name="upExitCodeFromService" value="" />
+          <option name="upTimeout" value="" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -32,20 +60,21 @@
       <workItem from="1620296751040" duration="1892000" />
       <workItem from="1620654145573" duration="229000" />
       <workItem from="1620901637969" duration="597000" />
+      <workItem from="1621516324414" duration="18000" />
+      <workItem from="1621760260332" duration="15827000" />
+      <workItem from="1621862541562" duration="599000" />
+      <workItem from="1622035054807" duration="30000" />
+      <workItem from="1622282673410" duration="631000" />
+      <workItem from="1622365787122" duration="603000" />
+      <workItem from="1622466638530" duration="204000" />
+      <workItem from="1622662040618" duration="392000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="613" y="255" width="694" height="518" key="find.popup" timestamp="1620297741268">
-      <screen x="0" y="25" width="1920" height="979" />
-    </state>
-    <state x="613" y="255" width="694" height="518" key="find.popup/0.25.1920.979@0.25.1920.979" timestamp="1620297741268" />
-    <state x="305" y="48" width="670" height="676" key="search.everywhere.popup" timestamp="1620147651712">
-      <screen x="0" y="25" width="1280" height="699" />
-    </state>
-    <state x="305" y="48" width="670" height="676" key="search.everywhere.popup/0.25.1280.699@0.25.1280.699" timestamp="1620147651712" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

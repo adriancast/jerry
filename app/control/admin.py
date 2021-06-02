@@ -71,8 +71,17 @@ class ProjectInline(admin.TabularInline):
         'description',
         'start_date',
         'is_cancelled',
-        'required_hours'
+        'required_hours',
+        'delayed_tasks_percentage',
+        'delayed_tasks',
+        'completed_tasks',
+        'delta_roi',
+        'real_roi',
+        'estimated_roi',
+        'category',
+        'status',
     ]
+
     def has_add_permission(self, request, obj=None):
         return False
 
