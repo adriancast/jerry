@@ -52,10 +52,9 @@ class PortfolioConfiguration(models.Model):
 
         super().save(*args, **kwargs)
 
-    @property
     def is_validated_by_manager(self):
         default = False
-        has_general_manager_revision = bool(self.general_manager_revision)
+        has_general_manager_revision = hasattr(self, 'general_manager_revision')
         return (
             self.general_manager_revision.is_validated
             if has_general_manager_revision
@@ -66,7 +65,7 @@ class PortfolioConfiguration(models.Model):
         return self.name
 
 class PortfolioConfigurationGeneralManagerRevision(models.Model):
-    portfolio_configuration = models.ForeignKey(
+    portfolio_configuration = models.OneToOneField(
         PortfolioConfiguration,
         on_delete=models.CASCADE,
         related_name='general_manager_revision'
@@ -120,7 +119,7 @@ class Project(models.Model):
         default=STATUS_PENDING,
     )
 
-    wallet = models.ForeignKey(
+    wallet = models.OneToOneField(
         ProjectWallet,
         on_delete=models.CASCADE,
     )
@@ -132,7 +131,7 @@ class Project(models.Model):
     category = models.CharField(max_length=256, blank=True)
 
     estimated_roi = models.PositiveIntegerField()
-    real_roi = models.IntegerField()
+    real_roi = models.IntegerField(default=0)
 
     is_cancelled = models.BooleanField(default=False)
 
@@ -151,19 +150,25 @@ class Project(models.Model):
     estimated_total_hours = models.PositiveIntegerField(help_text='€')
     estimated_total_cost = models.PositiveIntegerField(help_text='€')
     estimated_resources_cost = models.PositiveIntegerField(help_text='€')
-    total_real_cost = models.PositiveIntegerField(help_text='Money spent in the project in €')
+    total_real_cost = models.PositiveIntegerField(help_text='Money spent in the project in €', default=0)
 
     is_in_risk = models.BooleanField(default=False)
+    is_in_risk_msg = models.CharField(default='', max_length=256)
+    is_cancelled_msg = models.CharField(default='', max_length=256)
 
     def save(self, *args, **kwargs):
         self.delta_roi = round(self.real_roi / self.estimated_roi, 2)
         completed_milestones = len(self.milestones.filter(status=ProjectMilestone.STATUS_DONE))
         total_milestones = len(self.milestones.all())
-        self.completed_tasks = completed_milestones / total_milestones
+        self.completed_tasks = (
+            completed_milestones / total_milestones
+        ) if total_milestones else 0
         self.delayed_tasks = len(
             self.milestones.filter(due_date__lt=date.today())
         )
-        self.delayed_tasks_percentage = self.delayed_tasks / total_milestones
+        self.delayed_tasks_percentage = (
+            self.delayed_tasks / total_milestones
+        ) if total_milestones else 0
 
         self.estimated_total_hours = sum(
             [
@@ -191,9 +196,32 @@ class Project(models.Model):
         if self.status == self.STATUS_CANCELLED:
             self.is_cancelled = True
 
-        self.is_in_risk = any([
-            self.delayed_tasks_percentage > 0.25,
+        delayed_tasks_percentage_in_risk = (
+            self.delayed_tasks_percentage > 0.25
+        )
+        self.is_cancelled_msg = (
+            'PROJECT CANCELLED' if self.is_cancelled else 'PROJECT NOT CANCELLED'
+        )
+
+
+        self.is_in_risk_msg = '✅ The project is not in risk'
+        if delayed_tasks_percentage_in_risk:
+            self.is_in_risk_msg = '🔥 There is a more than a 25% of delay in tasks'
+
+        estimated_total_cost_in_risk = (
             self.estimated_total_cost < self.total_real_cost
+        )
+
+        if estimated_total_cost_in_risk:
+            self.is_in_risk_msg = '🔥 Real costs are higher than the estimated costs'
+
+        self.is_in_risk = any([
+            delayed_tasks_percentage_in_risk,
+            estimated_total_cost_in_risk
+        ])
+
+        self.total_real_cost = sum([
+            m.total_real_cost for m in self.milestones.all()
         ])
 
         super().save(*args, **kwargs)
@@ -214,6 +242,12 @@ class ProjectMilestone(models.Model):
         (STATUS_DONE, 'Done'),
     ]
 
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='milestones',
+    )
+
     status = models.CharField(
         max_length=32,
         choices=STATUS_CHOICES,
@@ -223,20 +257,14 @@ class ProjectMilestone(models.Model):
     description = models.TextField()
     due_date = models.DateField()
 
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        related_name='milestones',
-    )
-
-    used_dev_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_DEV))
-    used_sysops_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_SYSOPS))
-    used_management_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
-    used_marketing_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MARKETING))
-    used_operative_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_OPERATIVE))
+    used_dev_resources_hours = models.PositiveIntegerField(default=0, help_text='Cost €/h: {}'.format(COST_DEV))
+    used_sysops_resources_hours = models.PositiveIntegerField(default=0, help_text='Cost €/h: {}'.format(COST_SYSOPS))
+    used_management_resources_hours = models.PositiveIntegerField(default=0, help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
+    used_marketing_resources_hours = models.PositiveIntegerField(default=0, help_text='Cost €/h: {}'.format(COST_MARKETING))
+    used_operative_resources_hours = models.PositiveIntegerField(default=0, help_text='Cost €/h: {}'.format(COST_OPERATIVE))
     used_resources_cost = models.PositiveIntegerField(default=0)
 
-    used_other_cost = models.PositiveIntegerField(help_text='Total costs in €')
+    used_other_cost = models.PositiveIntegerField(default=0, help_text='Total costs in €')
     total_real_cost = models.PositiveIntegerField(help_text='Money spent in this task in €')
 
     def save(self, *args, **kwargs):

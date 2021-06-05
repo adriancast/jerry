@@ -47,6 +47,16 @@ class PortfolioConfigurationGeneralManagerRevisionAdmin(admin.ModelAdmin):
         'is_validated',
     ]
 
+    def get_form(self, request, obj=None, **kwargs):
+        if obj and obj.is_validated:
+            self.readonly_fields = [
+                'portfolio_configuration',
+                'comment',
+                'is_validated',
+            ]
+        form = super().get_form(request, obj, **kwargs)
+        return form
+
 class PortfolioConfigurationAdmin(admin.ModelAdmin):
     list_display = [
         'name',
@@ -65,6 +75,25 @@ class PortfolioConfigurationAdmin(admin.ModelAdmin):
         PortfolioConfigurationGeneralManagerRevisionInline,
         ProjectWalletInline,
     ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj and obj.is_validated_by_manager():
+            self.readonly_fields = [
+                'start_date',
+                'end_date',
+                'name',
+                'dev_resources_hours',
+                'sysops_resources_hours',
+                'management_resources_hours',
+                'marketing_resources_hours',
+                'operative_resources_hours',
+                'other_costs_budget',
+                'total_hours',
+                'total_budget_resources',
+                'total_budget_eur',
+            ]
+        form = super().get_form(request, obj, **kwargs)
+        return form
 
 class ProjectInline(admin.TabularInline):
     model = Project
@@ -85,11 +114,11 @@ class ProjectInline(admin.TabularInline):
         'estimated_roi',
         'category',
         'status',
-        'dev_resources_hours',
-        'sysops_resources_hours',
-        'management_resources_hours',
-        'marketing_resources_hours',
-        'operative_resources_hours',
+        'estimated_dev_resources_hours',
+        'estimated_sysops_resources_hours',
+        'estimated_management_resources_hours',
+        'estimated_marketing_resources_hours',
+        'estimated_operative_resources_hours',
     ]
 
     def has_add_permission(self, request, obj=None):
@@ -142,12 +171,34 @@ class ProjectMilestoneInline(admin.TabularInline):
     show_change_link = True
     extra = 0
     can_delete = False
+    max_num = 0
+
+    readonly_fields = [
+        'name', 'status', 'description'
+    ]
+
+    exclude = [
+        'due_date',
+        'used_dev_resources_hours',
+        'used_sysops_resources_hours',
+        'used_management_resources_hours',
+        'used_marketing_resources_hours',
+        'used_operative_resources_hours',
+        'used_resources_cost',
+        'used_other_cost',
+        'total_real_cost',
+    ]
 
 
 class ProjectAdmin(admin.ModelAdmin):
     inlines = [
         ProjectMilestoneInline,
     ]
+    exclude = [
+        'is_in_risk',
+        'is_cancelled',
+    ]
+
     list_display = [
         'name',
         'description',
@@ -157,7 +208,8 @@ class ProjectAdmin(admin.ModelAdmin):
         'delta_roi',
         'delayed_tasks',
         'delayed_tasks_percentage',
-        'is_cancelled',
+        'is_cancelled_msg',
+        'is_in_risk_msg',
     ]
 
     readonly_fields = [
@@ -170,13 +222,16 @@ class ProjectAdmin(admin.ModelAdmin):
         'estimated_total_cost',
         'estimated_total_hours',
         'estimated_total_hours',
-        'is_in_risk',
+        'is_in_risk_msg',
+        'total_real_cost',
+        'is_cancelled_msg',
     ]
 
     list_filter = [
         'category',
         'priority',
-        'is_cancelled',
+        'is_cancelled_msg',
+        'is_in_risk_msg',
     ]
 
     def get_form(self, request, obj=None, **kwargs):
