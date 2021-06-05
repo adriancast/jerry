@@ -142,7 +142,12 @@ class ProjectWallet(models.Model):
         self.projects_operative_resources_hours = 0
         self.not_assigned_operative_resources_hours = 0
 
-        for project in self.projects.all() :
+        # Pinxo I cant do this properly using the queryset queries
+        filtered_projects = [
+            p for p in self.projects.all() if p.status != Project.STATUS_NOT_ACCEPTED
+        ]
+
+        for project in filtered_projects:
             self.projects_total_estimated_costs += project.estimated_total_cost
             self.not_assigned_total_costs = self.portfolio_configuration.total_budget_eur - self.projects_total_estimated_costs
 
@@ -184,7 +189,7 @@ class Project(models.Model):
         (STATUS_DONE, 'Done'),
         (STATUS_CANCELLED, 'Cancelled'),
         (STATUS_NOT_ACCEPTED, 'Not accepted'),
-        (STATUS_NOT_ACCEPTED, 'Accepted'),
+        (STATUS_ACCEPTED, 'Accepted'),
     ]
 
     status = models.CharField(
@@ -300,6 +305,9 @@ class Project(models.Model):
         ])
 
         super().save(*args, **kwargs)
+        self.wallet.save()
+
+
 
     def __str__(self):
         return self.name

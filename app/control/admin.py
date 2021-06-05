@@ -135,8 +135,9 @@ class ProjectInline(admin.TabularInline):
     extra = 0
     show_change_link = True
     readonly_fields = [
-        'priority',
         'name',
+    ]
+    exclude = [
         'description',
         'start_date',
         'is_cancelled',
@@ -147,12 +148,20 @@ class ProjectInline(admin.TabularInline):
         'real_roi',
         'estimated_roi',
         'category',
-        'status',
         'estimated_dev_resources_hours',
         'estimated_sysops_resources_hours',
         'estimated_management_resources_hours',
         'estimated_marketing_resources_hours',
         'estimated_operative_resources_hours',
+        'estimated_other_costs',
+        'estimated_total_hours',
+        'estimated_total_cost',
+        'estimated_resources_cost',
+        'estimated_other_cost',
+        'total_real_cost',
+        'is_in_risk',
+        'is_in_risk_msg',
+        'is_cancelled_msg',
     ]
 
     def has_add_permission(self, request, obj=None):
@@ -163,6 +172,7 @@ class ProjectInline(admin.TabularInline):
 
 class ProjectWalletAdmin(admin.ModelAdmin):
     list_display = [
+        'name',
         'start_date',
         'end_date',
         'description',
