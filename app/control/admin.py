@@ -4,7 +4,8 @@ from .models import (
     Project,
     ProjectWallet,
     ProjectMilestone,
-    PortfolioConfigurationGeneralManagerRevision
+    PortfolioConfigurationGeneralManagerRevision,
+    ProjectRevision,
 )
 
 class ProjectWalletInline(admin.TabularInline):
@@ -51,6 +52,39 @@ class PortfolioConfigurationGeneralManagerRevisionAdmin(admin.ModelAdmin):
         if obj and obj.is_validated:
             self.readonly_fields = [
                 'portfolio_configuration',
+                'comment',
+                'is_validated',
+            ]
+        form = super().get_form(request, obj, **kwargs)
+        return form
+
+
+class ProjectRevisionInline(admin.TabularInline):
+    model = ProjectRevision
+    extra = 0
+    show_change_link = True
+    can_delete = False
+    readonly_fields = [
+        'comment',
+        'is_validated'
+    ]
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+class ProjectRevisionAdmin(admin.ModelAdmin):
+    list_display = [
+        'project',
+        'comment',
+        'is_validated',
+    ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj and obj.is_validated:
+            self.readonly_fields = [
+                'project',
                 'comment',
                 'is_validated',
             ]
@@ -137,6 +171,21 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         ProjectInline,
     ]
 
+    readonly_fields = [
+        'projects_total_estimated_costs',
+        'not_assigned_total_costs',
+        'projects_dev_resources_hours',
+        'not_assigned_dev_resources_hours',
+        'projects_sysops_resources_hours',
+        'not_assigned_sysops_resources_hours',
+        'projects_management_resources_hours',
+        'not_assigned_management_resources_hours',
+        'projects_marketing_resources_hours',
+        'not_assigned_marketing_resources_hours',
+        'projects_operative_resources_hours',
+        'not_assigned_operative_resources_hours',
+    ]
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['portfolio_configuration'].queryset = PortfolioConfiguration.objects.filter(
@@ -193,6 +242,7 @@ class ProjectMilestoneInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     inlines = [
         ProjectMilestoneInline,
+        ProjectRevisionInline,
     ]
     exclude = [
         'is_in_risk',
@@ -251,3 +301,4 @@ admin.site.register(PortfolioConfiguration, PortfolioConfigurationAdmin)
 admin.site.register(ProjectMilestone, ProjectMilestoneAdmin)
 admin.site.register(ProjectWallet, ProjectWalletAdmin)
 admin.site.register(PortfolioConfigurationGeneralManagerRevision, PortfolioConfigurationGeneralManagerRevisionAdmin)
+admin.site.register(ProjectRevision, ProjectRevisionAdmin)

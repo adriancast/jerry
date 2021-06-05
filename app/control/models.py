@@ -72,14 +72,6 @@ class PortfolioConfigurationGeneralManagerRevision(models.Model):
     )
 
     is_validated = models.BooleanField(default=False)
-
-    # total_budget_eur = models.PositiveIntegerField(blank=True, null=True)
-    # dev_resources_hours = models.PositiveIntegerField(blank=True, null=True)
-    # sysops_resources_hours = models.PositiveIntegerField(blank=True, null=True)
-    # management_resources_hours = models.PositiveIntegerField(blank=True, null=True)
-    # marketing_resources_hours = models.PositiveIntegerField(blank=True, null=True)
-    # operative_resources_hours = models.PositiveIntegerField(blank=True, null=True)
-
     comment = models.TextField(blank=True, null=True)
 
 
@@ -96,6 +88,84 @@ class ProjectWallet(models.Model):
 
     is_open = models.BooleanField(default=True)
 
+    # Internal fields
+    projects_total_estimated_costs = models.PositiveIntegerField()
+    not_assigned_total_costs = models.PositiveIntegerField()
+
+    projects_dev_resources_hours = models.PositiveIntegerField()
+    not_assigned_dev_resources_hours = models.PositiveIntegerField()
+
+    projects_sysops_resources_hours = models.PositiveIntegerField()
+    not_assigned_sysops_resources_hours = models.PositiveIntegerField()
+
+    projects_management_resources_hours = models.PositiveIntegerField()
+    not_assigned_management_resources_hours = models.PositiveIntegerField()
+
+    projects_marketing_resources_hours = models.PositiveIntegerField()
+    not_assigned_marketing_resources_hours = models.PositiveIntegerField()
+
+    projects_operative_resources_hours = models.PositiveIntegerField()
+    not_assigned_operative_resources_hours = models.PositiveIntegerField()
+
+
+    readonly_fields = [
+        'projects_total_estimated_costs',
+        'not_assigned_total_costs',
+        'projects_dev_resources_hours',
+        'not_assigned_dev_resources_hours',
+        'projects_sysops_resources_hours',
+        'not_assigned_sysops_resources_hours',
+        'projects_management_resources_hours',
+        'not_assigned_management_resources_hours',
+        'projects_marketing_resources_hours',
+        'not_assigned_marketing_resources_hours',
+        'projects_operative_resources_hours',
+        'not_assigned_operative_resources_hours',
+    ]
+
+    def calculate_relation_data(self):
+        self.projects_total_estimated_costs = 0
+        self.not_assigned_total_costs = 0
+
+        self.not_assigned_dev_resources_hours = 0
+        self.projects_dev_resources_hours = 0
+
+        self.projects_sysops_resources_hours = 0
+        self.not_assigned_sysops_resources_hours = 0
+
+        self.projects_management_resources_hours = 0
+        self.not_assigned_management_resources_hours = 0
+
+        self.projects_marketing_resources_hours = 0
+        self.not_assigned_marketing_resources_hours = 0
+
+        self.projects_operative_resources_hours = 0
+        self.not_assigned_operative_resources_hours = 0
+
+        for project in self.projects.all() :
+            self.projects_total_estimated_costs += project.estimated_total_cost
+            self.not_assigned_total_costs = self.portfolio_configuration.total_budget_eur - self.projects_total_estimated_costs
+
+            self.projects_dev_resources_hours += project.estimated_dev_resources_hours
+            self.not_assigned_dev_resources_hours = self.portfolio_configuration.dev_resources_hours - self.projects_dev_resources_hours
+
+            self.projects_sysops_resources_hours += project.estimated_sysops_resources_hours
+            self.not_assigned_sysops_resources_hours = self.portfolio_configuration.sysops_resources_hours - self.projects_sysops_resources_hours
+
+            self.projects_management_resources_hours += project.estimated_management_resources_hours
+            self.not_assigned_management_resources_hours = self.portfolio_configuration.management_resources_hours - self.projects_management_resources_hours
+
+            self.projects_marketing_resources_hours += project.estimated_marketing_resources_hours
+            self.not_assigned_marketing_resources_hours = self.portfolio_configuration.marketing_resources_hours - self.projects_marketing_resources_hours
+
+            self.projects_operative_resources_hours += project.estimated_operative_resources_hours
+            self.not_assigned_operative_resources_hours = project.estimated_operative_resources_hours - self.projects_operative_resources_hours
+
+
+    def save(self, *args, **kwargs):
+        self.calculate_relation_data()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -105,12 +175,16 @@ class Project(models.Model):
     STATUS_BLOCKED = 'BLOCKED'
     STATUS_DONE = 'DONE'
     STATUS_CANCELLED = 'CANCELLED'
+    STATUS_NOT_ACCEPTED = 'NOT_ACCEPTED'
+    STATUS_ACCEPTED = 'ACCEPTED'
     STATUS_CHOICES = [
         (STATUS_PENDING, 'Pending'),
         (STATUS_IN_PROGRESS, 'In progress'),
         (STATUS_BLOCKED, 'Blocked'),
         (STATUS_DONE, 'Done'),
         (STATUS_CANCELLED, 'Cancelled'),
+        (STATUS_NOT_ACCEPTED, 'Not accepted'),
+        (STATUS_NOT_ACCEPTED, 'Accepted'),
     ]
 
     status = models.CharField(
@@ -119,9 +193,10 @@ class Project(models.Model):
         default=STATUS_PENDING,
     )
 
-    wallet = models.OneToOneField(
+    wallet = models.ForeignKey(
         ProjectWallet,
         on_delete=models.CASCADE,
+        related_name='projects',
     )
     priority = models.PositiveIntegerField(default=10)
     name = models.CharField(max_length=256)
@@ -228,6 +303,17 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProjectRevision(models.Model):
+    project = models.OneToOneField(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='cio_revision'
+    )
+
+    is_validated = models.BooleanField(default=False)
+    comment = models.TextField(blank=True, null=True)
 
 
 class ProjectMilestone(models.Model):
