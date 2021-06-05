@@ -100,8 +100,6 @@ class ProjectWallet(models.Model):
     def __str__(self):
         return self.name
 
-
-
 class Project(models.Model):
     STATUS_PENDING = 'PENDING'
     STATUS_IN_PROGRESS = 'IN_PROGRESS'
@@ -138,13 +136,12 @@ class Project(models.Model):
 
     is_cancelled = models.BooleanField(default=False)
 
-    dev_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_DEV))
-    sysops_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_SYSOPS))
-    management_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
-    marketing_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MARKETING))
-    operative_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_OPERATIVE))
+    estimated_dev_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_DEV))
+    estimated_sysops_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_SYSOPS))
+    estimated_management_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
+    estimated_marketing_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MARKETING))
+    estimated_operative_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_OPERATIVE))
     estimated_other_cost = models.PositiveIntegerField(help_text='Total costs in €')
-    total_real_cost = models.PositiveIntegerField(help_text='Money spent in the project in €')
 
     # Internal fields
     delta_roi = models.FloatField(blank=True, null=True)
@@ -154,6 +151,7 @@ class Project(models.Model):
     estimated_total_hours = models.PositiveIntegerField(help_text='€')
     estimated_total_cost = models.PositiveIntegerField(help_text='€')
     estimated_resources_cost = models.PositiveIntegerField(help_text='€')
+    total_real_cost = models.PositiveIntegerField(help_text='Money spent in the project in €')
 
     is_in_risk = models.BooleanField(default=False)
 
@@ -169,21 +167,21 @@ class Project(models.Model):
 
         self.estimated_total_hours = sum(
             [
-                self.dev_resources_hours,
-                self.sysops_resources_hours,
-                self.management_resources_hours,
-                self.marketing_resources_hours,
-                self.operative_resources_hours,
+                self.estimated_dev_resources_hours,
+                self.estimated_sysops_resources_hours,
+                self.estimated_management_resources_hours,
+                self.estimated_marketing_resources_hours,
+                self.estimated_operative_resources_hours,
             ]
         )
 
         self.estimated_resources_cost = sum(
             [
-                self.dev_resources_hours * COST_DEV,
-                self.sysops_resources_hours * COST_SYSOPS,
-                self.management_resources_hours * COST_MANAGEMENT,
-                self.marketing_resources_hours * COST_MARKETING,
-                self.operative_resources_hours * COST_OPERATIVE,
+                self.estimated_dev_resources_hours * COST_DEV,
+                self.estimated_sysops_resources_hours * COST_SYSOPS,
+                self.estimated_management_resources_hours * COST_MANAGEMENT,
+                self.estimated_marketing_resources_hours * COST_MARKETING,
+                self.estimated_operative_resources_hours * COST_OPERATIVE,
             ]
         )
 
@@ -231,9 +229,42 @@ class ProjectMilestone(models.Model):
         related_name='milestones',
     )
 
+    used_dev_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_DEV))
+    used_sysops_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_SYSOPS))
+    used_management_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MANAGEMENT))
+    used_marketing_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_MARKETING))
+    used_operative_resources_hours = models.PositiveIntegerField(help_text='Cost €/h: {}'.format(COST_OPERATIVE))
+    used_resources_cost = models.PositiveIntegerField(default=0)
+
+    used_other_cost = models.PositiveIntegerField(help_text='Total costs in €')
+    total_real_cost = models.PositiveIntegerField(help_text='Money spent in this task in €')
+
     def save(self, *args, **kwargs):
+        self.used_resources_cost = sum(
+            [
+                self.used_dev_resources_hours * COST_DEV,
+                self.used_sysops_resources_hours * COST_SYSOPS,
+                self.used_management_resources_hours * COST_MANAGEMENT,
+                self.used_marketing_resources_hours * COST_MARKETING,
+                self.used_operative_resources_hours * COST_OPERATIVE,
+            ]
+        )
+
+        self.total_real_cost = self.used_resources_cost + self.used_other_cost
+
         super().save(*args, **kwargs)
         self.project.save()
 
     def __str__(self):
         return self.name
+
+
+class WalletReport(models.Model):
+
+    total_tasks = models.PositiveIntegerField()
+    total_delayed_tasks = models.PositiveIntegerField()
+    total_delayed_tasks_percentage = models.FloatField()
+
+    total_costs = models.PositiveIntegerField()
+    total_revenue = models.PositiveIntegerField()
+

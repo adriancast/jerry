@@ -129,6 +129,14 @@ class ProjectMilestoneAdmin(admin.ModelAdmin):
         'status'
     ]
 
+    exclude = [
+        'used_resources_cost',
+    ]
+
+    readonly_fields = [
+        'total_real_cost',
+    ]
+
 class ProjectMilestoneInline(admin.TabularInline):
     model = ProjectMilestone
     show_change_link = True

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7a38c4fb-571b-4b9c-8911-bcdde30d41b7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/control/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/control/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/control/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/control/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +67,10 @@
       <workItem from="1622282673410" duration="631000" />
       <workItem from="1622365787122" duration="603000" />
       <workItem from="1622466638530" duration="204000" />
-      <workItem from="1622662040618" duration="392000" />
+      <workItem from="1622662040618" duration="4761000" />
+      <workItem from="1622723480572" duration="1265000" />
+      <workItem from="1622788011550" duration="1263000" />
+      <workItem from="1622887157984" duration="2888000" />
     </task>
     <servers />
   </component>
