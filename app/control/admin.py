@@ -217,17 +217,17 @@ class ProjectWalletAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
-        'projects_total_estimated_costs',
+        #'projects_total_estimated_costs',
         'not_assigned_total_costs',
-        'projects_dev_resources_hours',
+        #'projects_dev_resources_hours',
         'not_assigned_dev_resources_hours',
-        'projects_sysops_resources_hours',
+        #'projects_sysops_resources_hours',
         'not_assigned_sysops_resources_hours',
-        'projects_management_resources_hours',
+        #'projects_management_resources_hours',
         'not_assigned_management_resources_hours',
-        'projects_marketing_resources_hours',
+        #'projects_marketing_resources_hours',
         'not_assigned_marketing_resources_hours',
-        'projects_operative_resources_hours',
+        #'projects_operative_resources_hours',
         'not_assigned_operative_resources_hours',
     ]
 
@@ -236,6 +236,7 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         form.base_fields['portfolio_configuration'].queryset = PortfolioConfiguration.objects.filter(
             general_manager_revision__is_validated=True
         )
+
         return form
 
 

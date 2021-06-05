@@ -76,10 +76,9 @@ class PortfolioConfigurationGeneralManagerRevision(models.Model):
 
 
 class ProjectWallet(models.Model):
-    portfolio_configuration = models.OneToOneField(
+    portfolio_configuration = models.ForeignKey(
         PortfolioConfiguration,
         on_delete=models.CASCADE,
-        primary_key=True,
     )
     name = models.CharField(max_length=256)
     start_date = models.DateField()
@@ -108,38 +107,23 @@ class ProjectWallet(models.Model):
     not_assigned_operative_resources_hours = models.PositiveIntegerField()
 
 
-    readonly_fields = [
-        'projects_total_estimated_costs',
-        'not_assigned_total_costs',
-        'projects_dev_resources_hours',
-        'not_assigned_dev_resources_hours',
-        'projects_sysops_resources_hours',
-        'not_assigned_sysops_resources_hours',
-        'projects_management_resources_hours',
-        'not_assigned_management_resources_hours',
-        'projects_marketing_resources_hours',
-        'not_assigned_marketing_resources_hours',
-        'projects_operative_resources_hours',
-        'not_assigned_operative_resources_hours',
-    ]
-
     def calculate_relation_data(self):
-        self.projects_total_estimated_costs = 0
+        #self.projects_total_estimated_costs = 0
         self.not_assigned_total_costs = 0
 
         self.not_assigned_dev_resources_hours = 0
-        self.projects_dev_resources_hours = 0
+        #self.projects_dev_resources_hours = 0
 
-        self.projects_sysops_resources_hours = 0
+        #self.projects_sysops_resources_hours = 0
         self.not_assigned_sysops_resources_hours = 0
 
-        self.projects_management_resources_hours = 0
+        #self.projects_management_resources_hours = 0
         self.not_assigned_management_resources_hours = 0
 
-        self.projects_marketing_resources_hours = 0
+        #self.projects_marketing_resources_hours = 0
         self.not_assigned_marketing_resources_hours = 0
 
-        self.projects_operative_resources_hours = 0
+        #self.projects_operative_resources_hours = 0
         self.not_assigned_operative_resources_hours = 0
 
         # Pinxo I cant do this properly using the queryset queries
