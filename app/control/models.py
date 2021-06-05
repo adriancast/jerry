@@ -174,6 +174,17 @@ class ProjectWallet(models.Model):
     def __str__(self):
         return self.name
 
+
+class ProjectWalletRevision(models.Model):
+    project_wallet = models.OneToOneField(
+        ProjectWallet,
+        on_delete=models.CASCADE,
+        related_name='general_manager_revision'
+    )
+
+    is_validated = models.BooleanField(default=False)
+    comment = models.TextField(blank=True, null=True)
+
 class Project(models.Model):
     STATUS_PENDING = 'PENDING'
     STATUS_IN_PROGRESS = 'IN_PROGRESS'
@@ -379,14 +390,3 @@ class ProjectMilestone(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class WalletReport(models.Model):
-
-    total_tasks = models.PositiveIntegerField()
-    total_delayed_tasks = models.PositiveIntegerField()
-    total_delayed_tasks_percentage = models.FloatField()
-
-    total_costs = models.PositiveIntegerField()
-    total_revenue = models.PositiveIntegerField()
-

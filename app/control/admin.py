@@ -6,6 +6,7 @@ from .models import (
     ProjectMilestone,
     PortfolioConfigurationGeneralManagerRevision,
     ProjectRevision,
+    ProjectWalletRevision
 )
 
 class ProjectWalletInline(admin.TabularInline):
@@ -90,6 +91,39 @@ class ProjectRevisionAdmin(admin.ModelAdmin):
             ]
         form = super().get_form(request, obj, **kwargs)
         return form
+
+class ProjectWalletRevisionInline(admin.TabularInline):
+    model = ProjectWalletRevision
+    extra = 0
+    show_change_link = True
+    can_delete = False
+    readonly_fields = [
+        'comment',
+        'is_validated'
+    ]
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+class ProjectWalletRevisionAdmin(admin.ModelAdmin):
+    list_display = [
+        'project_wallet',
+        'comment',
+        'is_validated',
+    ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj and obj.is_validated:
+            self.readonly_fields = [
+                'project_wallet',
+                'comment',
+                'is_validated',
+            ]
+        form = super().get_form(request, obj, **kwargs)
+        return form
+
 
 class PortfolioConfigurationAdmin(admin.ModelAdmin):
     list_display = [
@@ -179,6 +213,7 @@ class ProjectWalletAdmin(admin.ModelAdmin):
     ]
     inlines = [
         ProjectInline,
+        ProjectWalletRevisionInline,
     ]
 
     readonly_fields = [
@@ -310,5 +345,6 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(PortfolioConfiguration, PortfolioConfigurationAdmin)
 admin.site.register(ProjectMilestone, ProjectMilestoneAdmin)
 admin.site.register(ProjectWallet, ProjectWalletAdmin)
+admin.site.register(ProjectWalletRevision, ProjectWalletRevisionAdmin)
 admin.site.register(PortfolioConfigurationGeneralManagerRevision, PortfolioConfigurationGeneralManagerRevisionAdmin)
 admin.site.register(ProjectRevision, ProjectRevisionAdmin)
