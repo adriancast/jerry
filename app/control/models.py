@@ -108,28 +108,29 @@ class ProjectWallet(models.Model):
 
 
     def calculate_relation_data(self):
-        #self.projects_total_estimated_costs = 0
+        self.projects_total_estimated_costs = 0
         self.not_assigned_total_costs = 0
 
         self.not_assigned_dev_resources_hours = 0
-        #self.projects_dev_resources_hours = 0
+        self.projects_dev_resources_hours = 0
 
-        #self.projects_sysops_resources_hours = 0
+        self.projects_sysops_resources_hours = 0
         self.not_assigned_sysops_resources_hours = 0
 
-        #self.projects_management_resources_hours = 0
+        self.projects_management_resources_hours = 0
         self.not_assigned_management_resources_hours = 0
 
-        #self.projects_marketing_resources_hours = 0
+        self.projects_marketing_resources_hours = 0
         self.not_assigned_marketing_resources_hours = 0
 
-        #self.projects_operative_resources_hours = 0
+        self.projects_operative_resources_hours = 0
         self.not_assigned_operative_resources_hours = 0
 
         # Pinxo I cant do this properly using the queryset queries
         filtered_projects = [
             p for p in self.projects.all() if p.status != Project.STATUS_NOT_ACCEPTED
         ]
+
 
         for project in filtered_projects:
             self.projects_total_estimated_costs += project.estimated_total_cost
@@ -148,7 +149,7 @@ class ProjectWallet(models.Model):
             self.not_assigned_marketing_resources_hours = self.portfolio_configuration.marketing_resources_hours - self.projects_marketing_resources_hours
 
             self.projects_operative_resources_hours += project.estimated_operative_resources_hours
-            self.not_assigned_operative_resources_hours = project.estimated_operative_resources_hours - self.projects_operative_resources_hours
+            self.not_assigned_operative_resources_hours = self.portfolio_configuration.operative_resources_hours - self.projects_operative_resources_hours
 
 
     def save(self, *args, **kwargs):
