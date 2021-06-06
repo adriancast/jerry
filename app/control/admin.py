@@ -49,15 +49,15 @@ class PortfolioConfigurationGeneralManagerRevisionAdmin(admin.ModelAdmin):
         'is_validated',
     ]
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = []
         if obj and obj.is_validated:
-            self.readonly_fields = [
+            readonly_fields = [
                 'portfolio_configuration',
                 'comment',
                 'is_validated',
             ]
-        form = super().get_form(request, obj, **kwargs)
-        return form
+        return readonly_fields
 
 
 class ProjectRevisionInline(admin.TabularInline):
@@ -82,15 +82,15 @@ class ProjectRevisionAdmin(admin.ModelAdmin):
         'is_validated',
     ]
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = []
         if obj and obj.is_validated:
-            self.readonly_fields = [
+            readonly_fields = [
                 'project',
                 'comment',
                 'is_validated',
             ]
-        form = super().get_form(request, obj, **kwargs)
-        return form
+        return readonly_fields
 
 class ProjectWalletRevisionInline(admin.TabularInline):
     model = ProjectWalletRevision
@@ -114,15 +114,15 @@ class ProjectWalletRevisionAdmin(admin.ModelAdmin):
         'is_validated',
     ]
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = []
         if obj and obj.is_validated:
-            self.readonly_fields = [
+            readonly_fields = [
                 'project_wallet',
                 'comment',
                 'is_validated',
             ]
-        form = super().get_form(request, obj, **kwargs)
-        return form
+        return readonly_fields
 
 
 class PortfolioConfigurationAdmin(admin.ModelAdmin):
@@ -144,9 +144,14 @@ class PortfolioConfigurationAdmin(admin.ModelAdmin):
         ProjectWalletInline,
     ]
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = [
+            'total_hours',
+            'total_budget_resources',
+            'total_budget_eur',
+        ]
         if obj and obj.is_validated_by_manager():
-            self.readonly_fields = [
+            readonly_fields = [
                 'start_date',
                 'end_date',
                 'name',
@@ -160,8 +165,7 @@ class PortfolioConfigurationAdmin(admin.ModelAdmin):
                 'total_budget_resources',
                 'total_budget_eur',
             ]
-        form = super().get_form(request, obj, **kwargs)
-        return form
+        return readonly_fields
 
 class ProjectInline(admin.TabularInline):
     model = Project
