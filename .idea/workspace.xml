@@ -4,9 +4,11 @@
     <list default="true" id="7a38c4fb-571b-4b9c-8911-bcdde30d41b7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/control/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/control/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/control/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/control/migrations/0002_alter_projectwallet_portfolio_configuration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/control/migrations/0003_auto_20210605_2248.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/control/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/control/models.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,18 +35,6 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/docker-compose.yml" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
   <component name="RunManager">
     <configuration name="dev" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
       <deployment type="docker-compose.yml">
@@ -58,7 +48,7 @@
       <method v="2" />
     </configuration>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -84,6 +74,7 @@
       <workItem from="1622723480572" duration="1265000" />
       <workItem from="1622788011550" duration="1263000" />
       <workItem from="1622887157984" duration="2888000" />
+      <workItem from="1622971393216" duration="2660000" />
     </task>
     <servers />
   </component>
@@ -100,5 +91,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

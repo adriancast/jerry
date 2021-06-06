@@ -88,23 +88,23 @@ class ProjectWallet(models.Model):
     is_open = models.BooleanField(default=True)
 
     # Internal fields
-    projects_total_estimated_costs = models.PositiveIntegerField()
-    not_assigned_total_costs = models.PositiveIntegerField()
+    projects_total_estimated_costs = models.IntegerField(default=0)
+    not_assigned_total_costs = models.IntegerField(default=0)
 
-    projects_dev_resources_hours = models.PositiveIntegerField()
-    not_assigned_dev_resources_hours = models.PositiveIntegerField()
+    projects_dev_resources_hours = models.IntegerField(default=0)
+    not_assigned_dev_resources_hours = models.IntegerField(default=0)
 
-    projects_sysops_resources_hours = models.PositiveIntegerField()
-    not_assigned_sysops_resources_hours = models.PositiveIntegerField()
+    projects_sysops_resources_hours = models.IntegerField(default=0)
+    not_assigned_sysops_resources_hours = models.IntegerField(default=0)
 
-    projects_management_resources_hours = models.PositiveIntegerField()
-    not_assigned_management_resources_hours = models.PositiveIntegerField()
+    projects_management_resources_hours = models.IntegerField(default=0)
+    not_assigned_management_resources_hours = models.IntegerField(default=0)
 
-    projects_marketing_resources_hours = models.PositiveIntegerField()
-    not_assigned_marketing_resources_hours = models.PositiveIntegerField()
+    projects_marketing_resources_hours = models.IntegerField(default=0)
+    not_assigned_marketing_resources_hours = models.IntegerField(default=0)
 
-    projects_operative_resources_hours = models.PositiveIntegerField()
-    not_assigned_operative_resources_hours = models.PositiveIntegerField()
+    projects_operative_resources_hours = models.IntegerField(default=0)
+    not_assigned_operative_resources_hours = models.IntegerField(default=0)
 
 
     def calculate_relation_data(self):
