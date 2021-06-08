@@ -114,7 +114,7 @@ class ProjectWallet(models.Model):
         Ok, I am sorry for this. This is pure bullshit. But meh, I need to deploy this tonight
         or I will have not time to study for the exam. This is shit, I know. But yeah.
 
-        Now, I will do a git add ., and push this shitty code to the server. 
+        Now, I will do a git add ., and push this shitty code to the server.
         """
         self.projects_total_estimated_costs = 0
         self.not_assigned_total_costs = self.portfolio_configuration.total_budget_eur

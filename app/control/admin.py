@@ -22,6 +22,21 @@ class ProjectWalletInline(admin.TabularInline):
         'start_date',
         'end_date',
         'description',
+        'is_open',
+        'can_add_new_projects',
+        'related_data_can_be_edited',
+        'projects_total_estimated_costs',
+        'not_assigned_total_costs',
+        'projects_dev_resources_hours',
+        'not_assigned_dev_resources_hours',
+        'projects_sysops_resources_hours',
+        'not_assigned_sysops_resources_hours',
+        'projects_management_resources_hours',
+        'not_assigned_management_resources_hours',
+        'projects_marketing_resources_hours',
+        'not_assigned_marketing_resources_hours',
+        'projects_operative_resources_hours',
+        'not_assigned_operative_resources_hours',
     ]
     def has_add_permission(self, request, obj=None):
         return False
@@ -272,7 +287,7 @@ class ProjectInline(admin.TabularInline):
         readonly_fields = [
             'name'
         ]
-        if obj and obj.is_closed_revision:
+        if obj and not obj.related_data_can_be_edited:
             readonly_fields += [
                 'status',
                 'priority',
@@ -297,6 +312,7 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         ProjectInline,
         ProjectWalletRevisionInline,
         ProjectWalletBlockedNewProjectsRevisionInline,
+        ProjectWalletIsClosedRevisionInline,
     ]
 
     readonly_fields = [
@@ -348,7 +364,7 @@ class ProjectMilestoneAdmin(admin.ModelAdmin):
         readonly_fields = [
             'total_real_cost',
         ]
-        if obj and obj.project.wallet and obj.project.wallet.is_closed_revision:
+        if obj and obj.project.wallet and not obj.project.wallet.related_data_can_be_edited:
             readonly_fields += [
                 'project',
                 'status',
@@ -454,7 +470,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 'estimated_operative_resources_hours',
                 'estimated_other_cost',
             ]
-        if obj and obj.wallet and obj.wallet.is_closed_revision:
+        if obj and obj.wallet and not obj.wallet.related_data_can_be_edited:
             readonly_fields += [
                 'status',
                 'wallet',
