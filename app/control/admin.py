@@ -337,6 +337,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     list_display = [
         'name',
+        'status',
         'description',
         'start_date',
         'priority',
@@ -348,26 +349,12 @@ class ProjectAdmin(admin.ModelAdmin):
         'is_in_risk_msg',
     ]
 
-    readonly_fields = [
-        'delta_roi',
-        'completed_tasks',
-        'is_cancelled',
-        'delayed_tasks',
-        'delayed_tasks_percentage',
-        'estimated_resources_cost',
-        'estimated_total_cost',
-        'estimated_total_hours',
-        'estimated_total_hours',
-        'is_in_risk_msg',
-        'total_real_cost',
-        'is_cancelled_msg',
-    ]
-
     list_filter = [
         'category',
         'priority',
         'is_cancelled_msg',
         'is_in_risk_msg',
+        'status',
     ]
 
     def get_form(self, request, obj=None, **kwargs):
@@ -379,7 +366,32 @@ class ProjectAdmin(admin.ModelAdmin):
         return form
 
     def get_readonly_fields(self, request, obj=None):
-        return self.readonly_fields
+        readonly_fields = [
+            'delta_roi',
+            'completed_tasks',
+            'is_cancelled',
+            'delayed_tasks',
+            'delayed_tasks_percentage',
+            'estimated_resources_cost',
+            'estimated_total_cost',
+            'estimated_total_hours',
+            'estimated_total_hours',
+            'is_in_risk_msg',
+            'total_real_cost',
+            'is_cancelled_msg',
+        ]
+        if obj and not obj.wallet.can_add_new_projects:
+            readonly_fields += [
+                'estimated_roi',
+                'estimated_dev_resources_hours',
+                'estimated_sysops_resources_hours',
+                'estimated_management_resources_hours',
+                'estimated_marketing_resources_hours',
+                'estimated_operative_resources_hours',
+                'estimated_other_cost',
+            ]
+
+        return readonly_fields
 
 # Register your models here.
 admin.site.register(Project, ProjectAdmin)

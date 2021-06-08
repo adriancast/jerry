@@ -184,6 +184,11 @@ class ProjectWalletRevision(models.Model):
     is_validated = models.BooleanField(default=False)
     comment = models.TextField(blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        self.project_wallet.is_open = not self.is_validated
+        self.project_wallet.save()
+        super().save(*args, **kwargs)
+
 class Project(models.Model):
     STATUS_PENDING = 'PENDING'
     STATUS_IN_PROGRESS = 'IN_PROGRESS'
