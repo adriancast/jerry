@@ -87,6 +87,7 @@ class ProjectWallet(models.Model):
 
     is_open = models.BooleanField(default=True)
     can_add_new_projects = models.BooleanField(default=True)
+    related_data_can_be_edited = models.BooleanField(default=True)
 
     # Internal fields
     projects_total_estimated_costs = models.IntegerField(default=0)
@@ -109,23 +110,29 @@ class ProjectWallet(models.Model):
 
 
     def calculate_relation_data(self):
+        """
+        Ok, I am sorry for this. This is pure bullshit. But meh, I need to deploy this tonight
+        or I will have not time to study for the exam. This is shit, I know. But yeah.
+
+        Now, I will do a git add ., and push this shitty code to the server. 
+        """
         self.projects_total_estimated_costs = 0
-        self.not_assigned_total_costs = 0
+        self.not_assigned_total_costs = self.portfolio_configuration.total_budget_eur
 
         self.not_assigned_dev_resources_hours = 0
-        self.projects_dev_resources_hours = 0
+        self.projects_dev_resources_hours = self.portfolio_configuration.dev_resources_hours
 
         self.projects_sysops_resources_hours = 0
-        self.not_assigned_sysops_resources_hours = 0
+        self.not_assigned_sysops_resources_hours = self.portfolio_configuration.sysops_resources_hours
 
         self.projects_management_resources_hours = 0
-        self.not_assigned_management_resources_hours = 0
+        self.not_assigned_management_resources_hours = self.portfolio_configuration.management_resources_hours
 
         self.projects_marketing_resources_hours = 0
-        self.not_assigned_marketing_resources_hours = 0
+        self.not_assigned_marketing_resources_hours = self.portfolio_configuration.marketing_resources_hours
 
         self.projects_operative_resources_hours = 0
-        self.not_assigned_operative_resources_hours = 0
+        self.not_assigned_operative_resources_hours = self.portfolio_configuration.operative_resources_hours
 
         # Pinxo I cant do this properly using the queryset queries
         filtered_projects = [
@@ -171,6 +178,21 @@ class ProjectWalletBlockedNewProjectsRevision(models.Model):
 
     def save(self, *args, **kwargs):
         self.project_wallet.can_add_new_projects = not self.is_validated
+        self.project_wallet.save()
+        super().save(*args, **kwargs)
+
+
+class ProjectWalletIsClosedRevision(models.Model):
+    project_wallet = models.OneToOneField(
+        ProjectWallet,
+        on_delete=models.CASCADE,
+        related_name='is_closed_revision'
+    )
+    is_validated = models.BooleanField(default=False)
+    comment = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.project_wallet.related_data_can_be_edited = not self.is_validated
         self.project_wallet.save()
         super().save(*args, **kwargs)
 

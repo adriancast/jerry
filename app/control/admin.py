@@ -8,12 +8,14 @@ from .models import (
     ProjectRevision,
     ProjectWalletRevision,
     ProjectWalletBlockedNewProjectsRevision,
+    ProjectWalletIsClosedRevision,
 )
 
 class ProjectWalletInline(admin.TabularInline):
     model = ProjectWallet
     extra = 0
     can_delete = False
+    show_change_link = True
     show_change_link = True
     readonly_fields = [
         'name',
@@ -126,6 +128,40 @@ class ProjectWalletRevisionAdmin(admin.ModelAdmin):
         return readonly_fields
 
 
+class ProjectWalletIsClosedRevisionInline(admin.TabularInline):
+    model = ProjectWalletIsClosedRevision
+    extra = 0
+    show_change_link = True
+    can_delete = False
+    readonly_fields = [
+        'comment',
+        'is_validated'
+    ]
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class ProjectWalletIsClosedRevisionAdmin(admin.ModelAdmin):
+    list_display = [
+        'project_wallet',
+        'comment',
+        'is_validated',
+    ]
+
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = []
+        if obj and obj.is_validated:
+            readonly_fields = [
+                'project_wallet',
+                'comment',
+                'is_validated',
+            ]
+        return readonly_fields
+
+
 class ProjectWalletBlockedNewProjectsRevisionInline(admin.TabularInline):
     model = ProjectWalletBlockedNewProjectsRevision
     extra = 0
@@ -205,9 +241,6 @@ class ProjectInline(admin.TabularInline):
     can_delete = False
     extra = 0
     show_change_link = True
-    readonly_fields = [
-        'name',
-    ]
     exclude = [
         'description',
         'start_date',
@@ -234,6 +267,18 @@ class ProjectInline(admin.TabularInline):
         'is_in_risk_msg',
         'is_cancelled_msg',
     ]
+
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = [
+            'name'
+        ]
+        if obj and obj.is_closed_revision:
+            readonly_fields += [
+                'status',
+                'priority',
+            ]
+
+        return readonly_fields
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -268,7 +313,8 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         'projects_operative_resources_hours',
         'not_assigned_operative_resources_hours',
         'is_open',
-        'can_add_new_projects'
+        'can_add_new_projects',
+        'related_data_can_be_edited',
     ]
 
     def get_form(self, request, obj=None, **kwargs):
@@ -297,9 +343,27 @@ class ProjectMilestoneAdmin(admin.ModelAdmin):
         'used_resources_cost',
     ]
 
-    readonly_fields = [
-        'total_real_cost',
-    ]
+
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = [
+            'total_real_cost',
+        ]
+        if obj and obj.project.wallet and obj.project.wallet.is_closed_revision:
+            readonly_fields += [
+                'project',
+                'status',
+                'name',
+                'description',
+                'due_date',
+                'used_dev_resources_hours',
+                'used_sysops_resources_hours',
+                'used_management_resources_hours',
+                'used_marketing_resources_hours',
+                'used_operative_resources_hours',
+                'used_resources_cost',
+                'used_other_cost',
+            ]
+        return readonly_fields
 
 class ProjectMilestoneInline(admin.TabularInline):
     model = ProjectMilestone
@@ -390,6 +454,17 @@ class ProjectAdmin(admin.ModelAdmin):
                 'estimated_operative_resources_hours',
                 'estimated_other_cost',
             ]
+        if obj and obj.wallet and obj.wallet.is_closed_revision:
+            readonly_fields += [
+                'status',
+                'wallet',
+                'priority',
+                'name',
+                'description',
+                'start_date',
+                'category',
+                'real_roi',
+            ]
 
         return readonly_fields
 
@@ -402,3 +477,4 @@ admin.site.register(ProjectWalletRevision, ProjectWalletRevisionAdmin)
 admin.site.register(PortfolioConfigurationGeneralManagerRevision, PortfolioConfigurationGeneralManagerRevisionAdmin)
 admin.site.register(ProjectRevision, ProjectRevisionAdmin)
 admin.site.register(ProjectWalletBlockedNewProjectsRevision, ProjectWalletBlockedNewProjectsRevisionAdmin)
+admin.site.register(ProjectWalletIsClosedRevision, ProjectWalletIsClosedRevisionAdmin)
