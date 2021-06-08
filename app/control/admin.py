@@ -6,7 +6,8 @@ from .models import (
     ProjectMilestone,
     PortfolioConfigurationGeneralManagerRevision,
     ProjectRevision,
-    ProjectWalletRevision
+    ProjectWalletRevision,
+    ProjectWalletBlockedNewProjectsRevision,
 )
 
 class ProjectWalletInline(admin.TabularInline):
@@ -125,6 +126,38 @@ class ProjectWalletRevisionAdmin(admin.ModelAdmin):
         return readonly_fields
 
 
+class ProjectWalletBlockedNewProjectsRevisionInline(admin.TabularInline):
+    model = ProjectWalletBlockedNewProjectsRevision
+    extra = 0
+    show_change_link = True
+    can_delete = False
+    readonly_fields = [
+        'comment',
+        'is_validated'
+    ]
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+class ProjectWalletBlockedNewProjectsRevisionAdmin(admin.ModelAdmin):
+    list_display = [
+        'project_wallet',
+        'comment',
+        'is_validated',
+    ]
+
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = []
+        if obj and obj.is_validated:
+            readonly_fields = [
+                'project_wallet',
+                'comment',
+                'is_validated',
+            ]
+        return readonly_fields
+
 class PortfolioConfigurationAdmin(admin.ModelAdmin):
     list_display = [
         'name',
@@ -218,6 +251,7 @@ class ProjectWalletAdmin(admin.ModelAdmin):
     inlines = [
         ProjectInline,
         ProjectWalletRevisionInline,
+        ProjectWalletBlockedNewProjectsRevisionInline,
     ]
 
     readonly_fields = [
@@ -233,6 +267,8 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         'not_assigned_marketing_resources_hours',
         'projects_operative_resources_hours',
         'not_assigned_operative_resources_hours',
+        'is_open',
+        'can_add_new_projects'
     ]
 
     def get_form(self, request, obj=None, **kwargs):
@@ -338,7 +374,7 @@ class ProjectAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         if not hasattr(obj, 'wallet'):
             form.base_fields['wallet'].queryset = ProjectWallet.objects.filter(
-                is_open=True
+                can_add_new_projects=True
             )
         return form
 
@@ -353,3 +389,4 @@ admin.site.register(ProjectWallet, ProjectWalletAdmin)
 admin.site.register(ProjectWalletRevision, ProjectWalletRevisionAdmin)
 admin.site.register(PortfolioConfigurationGeneralManagerRevision, PortfolioConfigurationGeneralManagerRevisionAdmin)
 admin.site.register(ProjectRevision, ProjectRevisionAdmin)
+admin.site.register(ProjectWalletBlockedNewProjectsRevision, ProjectWalletBlockedNewProjectsRevisionAdmin)

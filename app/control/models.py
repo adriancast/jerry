@@ -86,6 +86,7 @@ class ProjectWallet(models.Model):
     description = models.TextField()
 
     is_open = models.BooleanField(default=True)
+    can_add_new_projects = models.BooleanField(default=True)
 
     # Internal fields
     projects_total_estimated_costs = models.IntegerField(default=0)
@@ -159,6 +160,20 @@ class ProjectWallet(models.Model):
     def __str__(self):
         return self.name
 
+class ProjectWalletBlockedNewProjectsRevision(models.Model):
+    project_wallet = models.OneToOneField(
+        ProjectWallet,
+        on_delete=models.CASCADE,
+        related_name='blocked_new_projects_revision'
+    )
+    is_validated = models.BooleanField(default=False)
+    comment = models.TextField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.project_wallet.can_add_new_projects = not self.is_validated
+        self.project_wallet.save()
+        super().save(*args, **kwargs)
+
 
 class ProjectWalletRevision(models.Model):
     project_wallet = models.OneToOneField(
@@ -166,7 +181,6 @@ class ProjectWalletRevision(models.Model):
         on_delete=models.CASCADE,
         related_name='general_manager_revision'
     )
-
     is_validated = models.BooleanField(default=False)
     comment = models.TextField(blank=True, null=True)
 
