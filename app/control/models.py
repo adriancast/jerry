@@ -119,8 +119,8 @@ class ProjectWallet(models.Model):
         self.projects_total_estimated_costs = 0
         self.not_assigned_total_costs = self.portfolio_configuration.total_budget_eur
 
-        self.not_assigned_dev_resources_hours = 0
-        self.projects_dev_resources_hours = self.portfolio_configuration.dev_resources_hours
+        self.projects_dev_resources_hours = 0
+        self.not_assigned_dev_resources_hours = self.portfolio_configuration.dev_resources_hours
 
         self.projects_sysops_resources_hours = 0
         self.not_assigned_sysops_resources_hours = self.portfolio_configuration.sysops_resources_hours
