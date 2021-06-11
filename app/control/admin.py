@@ -85,7 +85,8 @@ class ProjectRevisionInline(admin.TabularInline):
     can_delete = False
     readonly_fields = [
         'comment',
-        'is_validated'
+        'is_validated',
+        'score',
     ]
     def has_add_permission(self, request, obj=None):
         return False
@@ -98,6 +99,7 @@ class ProjectRevisionAdmin(admin.ModelAdmin):
         'project',
         'comment',
         'is_validated',
+        'score',
     ]
 
     def get_readonly_fields(self, request, obj=None, **kwargs):
@@ -107,6 +109,7 @@ class ProjectRevisionAdmin(admin.ModelAdmin):
                 'project',
                 'comment',
                 'is_validated',
+                'score',
             ]
         return readonly_fields
 
