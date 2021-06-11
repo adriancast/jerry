@@ -464,14 +464,13 @@ class ProjectAdmin(admin.ModelAdmin):
             'estimated_resources_cost',
             'estimated_total_cost',
             'estimated_total_hours',
-            'estimated_total_hours',
             'total_real_cost',
             'is_in_risk_msg',
             'is_cancelled_msg',
         ]
         if obj and not obj.wallet.can_add_new_projects:
+            readonly_fields.insert(0, 'estimated_roi')
             readonly_fields += [
-                'estimated_roi',
                 'estimated_dev_resources_hours',
                 'estimated_sysops_resources_hours',
                 'estimated_management_resources_hours',
