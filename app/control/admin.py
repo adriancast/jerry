@@ -262,6 +262,7 @@ class ProjectInline(admin.TabularInline):
     exclude = [
         'description',
         'start_date',
+        'end_date',
         'is_cancelled',
         'delayed_tasks_percentage',
         'delayed_tasks',
@@ -421,6 +422,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = [
         'name',
         'status',
+        'get_project_wallet',
         'description',
         'start_date',
         'priority',
@@ -439,6 +441,11 @@ class ProjectAdmin(admin.ModelAdmin):
         'is_in_risk_msg',
         'status',
     ]
+
+    def get_project_wallet(self, obj):
+        return str(obj.wallet)
+
+    get_project_wallet.short_description = 'Project Wallet'
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -480,6 +487,7 @@ class ProjectAdmin(admin.ModelAdmin):
                 'name',
                 'description',
                 'start_date',
+                'end_date',
                 'category',
                 'real_roi',
             ]

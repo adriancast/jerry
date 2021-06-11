@@ -244,6 +244,7 @@ class Project(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField()
     start_date = models.DateField()
+    end_date = models.DateField()
 
     category = models.CharField(max_length=256, blank=True)
 
