@@ -319,23 +319,49 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         ProjectWalletIsClosedRevisionInline,
     ]
 
-    readonly_fields = [
-        'projects_total_estimated_costs',
-        'not_assigned_total_costs',
-        'projects_dev_resources_hours',
-        'not_assigned_dev_resources_hours',
-        'projects_sysops_resources_hours',
-        'not_assigned_sysops_resources_hours',
-        'projects_management_resources_hours',
-        'not_assigned_management_resources_hours',
-        'projects_marketing_resources_hours',
-        'not_assigned_marketing_resources_hours',
-        'projects_operative_resources_hours',
-        'not_assigned_operative_resources_hours',
-        'is_open',
-        'can_add_new_projects',
-        'related_data_can_be_edited',
-    ]
+    def get_readonly_fields(self, request, obj=None, **kwargs):
+        readonly_fields = [
+            'projects_total_estimated_costs',
+            'not_assigned_total_costs',
+            'projects_dev_resources_hours',
+            'not_assigned_dev_resources_hours',
+            'projects_sysops_resources_hours',
+            'not_assigned_sysops_resources_hours',
+            'projects_management_resources_hours',
+            'not_assigned_management_resources_hours',
+            'projects_marketing_resources_hours',
+            'not_assigned_marketing_resources_hours',
+            'projects_operative_resources_hours',
+            'not_assigned_operative_resources_hours',
+            'is_open',
+            'can_add_new_projects',
+            'related_data_can_be_edited',
+        ]
+        if obj and not obj.related_data_can_be_edited:
+            readonly_fields = [
+                'portfolio_configuration',
+                'name',
+                'start_date',
+                'end_date',
+                'description',
+
+                'projects_total_estimated_costs',
+                'not_assigned_total_costs',
+                'projects_dev_resources_hours',
+                'not_assigned_dev_resources_hours',
+                'projects_sysops_resources_hours',
+                'not_assigned_sysops_resources_hours',
+                'projects_management_resources_hours',
+                'not_assigned_management_resources_hours',
+                'projects_marketing_resources_hours',
+                'not_assigned_marketing_resources_hours',
+                'projects_operative_resources_hours',
+                'not_assigned_operative_resources_hours',
+                'is_open',
+                'can_add_new_projects',
+                'related_data_can_be_edited',
+            ]
+        return readonly_fields
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
