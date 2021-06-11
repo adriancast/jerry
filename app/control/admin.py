@@ -452,15 +452,14 @@ class ProjectAdmin(admin.ModelAdmin):
         readonly_fields = [
             'delta_roi',
             'completed_tasks',
-            'is_cancelled',
             'delayed_tasks',
             'delayed_tasks_percentage',
             'estimated_resources_cost',
             'estimated_total_cost',
             'estimated_total_hours',
             'estimated_total_hours',
-            'is_in_risk_msg',
             'total_real_cost',
+            'is_in_risk_msg',
             'is_cancelled_msg',
         ]
         if obj and not obj.wallet.can_add_new_projects:
