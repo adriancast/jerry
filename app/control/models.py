@@ -359,6 +359,7 @@ class ProjectRevision(models.Model):
 
     is_validated = models.BooleanField(default=False)
     comment = models.TextField(blank=True, null=True)
+    score = models.FloatField(default=0)
 
 
 class ProjectMilestone(models.Model):
