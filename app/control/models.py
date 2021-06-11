@@ -265,7 +265,7 @@ class Project(models.Model):
     completed_tasks = models.FloatField(blank=True, null=True)
     delayed_tasks = models.IntegerField(blank=True, null=True)
     delayed_tasks_percentage = models.FloatField(blank=True, null=True)
-    estimated_total_hours = models.PositiveIntegerField(help_text='€')
+    estimated_total_hours = models.PositiveIntegerField()
     estimated_total_cost = models.PositiveIntegerField(help_text='€')
     estimated_resources_cost = models.PositiveIntegerField(help_text='€')
     total_real_cost = models.PositiveIntegerField(help_text='Money spent in the project in €', default=0)
