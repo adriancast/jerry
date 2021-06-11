@@ -339,7 +339,7 @@ class ProjectWalletAdmin(admin.ModelAdmin):
         ]
         if obj and not obj.related_data_can_be_edited:
             readonly_fields = [
-                'portfolio_configuration',
+                # 'portfolio_configuration',
                 'name',
                 'start_date',
                 'end_date',
